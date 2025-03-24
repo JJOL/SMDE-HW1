@@ -17,15 +17,18 @@ airplanes_df$NumberofEngines <- as.factor(airplanes_df$NumberofEngines)
 airplanes_df$EngineType <- as.factor(airplanes_df$EngineType)
 airplanes_df$SalesRegion <- as.factor(airplanes_df$SalesRegion)
 
-summary(airplanes_df)
+# Transforming Price to be more legible in figures
+airplanes_df$`Price($)` <- airplanes_df$`Price($)` / 1e6
+colnames(airplanes_df)[colnames(airplanes_df) == "Price($)"] <- "Price($M)"
+
+summary(airplanes_df$`Price($M)`)
 
 # B. Summarize Price and Fuel Consumption ----
 # B.1 In all Data
 print("= ALL ===================================================")
-summary(airplanes_df$`Price($)`)
+summary(airplanes_df$`Price($M)`)
 summary(airplanes_df$`FuelConsumption(L/h)`)
 print("= ALL ===================================================")
-
 
 # B.2 Per EngineType
 piston_df = airplanes_df[airplanes_df$EngineType == 'Piston',]
@@ -35,18 +38,27 @@ cat("|piston_df| + |turbofan_df| =", nrow(piston_df) + nrow(turbofan_df))
 cat("|airplanes_df| =", nrow(airplanes_df))
 
 print("= piston_df ===================================================")
-summary(piston_df$`Price($)`)
+summary(piston_df$`Price($M)`)
 summary(piston_df$`FuelConsumption(L/h)`)
 print("= piston_df ===================================================")
 
 print("= turbofan_df ===================================================")
-summary(turbofan_df$`Price($)`)
+summary(turbofan_df$`Price($M)`)
 summary(turbofan_df$`FuelConsumption(L/h)`)
 print("= turbofan_df ===================================================")
 
-hist()
+op <- par(mfrow=c(2,3))
+hist(airplanes_df$`Price($M)`)
+hist(piston_df$`Price($M)`)
+hist(turbofan_df$`Price($M)`)
 
-boxplot(`Price($)`~EngineType, data=airplanes_df)
+hist(airplanes_df$`FuelConsumption(L/h)`)
+hist(piston_df$`FuelConsumption(L/h)`)
+hist(turbofan_df$`FuelConsumption(L/h)`)
+par(op)
+
+
+# C. Test Fuel Consumption Affected by Engine Type ----
 boxplot(`FuelConsumption(L/h)`~EngineType, data=airplanes_df)
 
 # 2. Make a smaller sample for exercise and final validation -------------
